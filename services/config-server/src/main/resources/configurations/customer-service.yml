@@ -1,0 +1,34 @@
+spring:
+  data:
+    mongodb:
+      username: root
+      password: password
+      host: localhost
+      port: 27017
+      database: customer
+      authentication-database: admin
+
+
+#this must be secured in production using spring security
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info #expose health endpoint
+  endpoint:
+    health:
+      show-details: always #when_authorized
+
+#info:
+#  app:
+#    name: customer-service
+#    description: This is a sample Balanciaga Spring Boot application.
+#    version: 1.0.0
+#  company:
+#    name: Balanciaga
+#    contact: support@balanciaga.com
+#    website: https://www.mycompany.com
+
+#host config
+server:
+  port: 8090
