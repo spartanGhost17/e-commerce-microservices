@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS Category
+(
+    id INTEGER NOT NULL PRIMARY KEY,
+    description VARCHAR(255),
+    name VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS Product
+(
+    id INTEGER NOT NULL PRIMARY KEY,
+    description VARCHAR(255),
+    name VARCHAR(255),
+    available_quantity DOUBLE PRECISION NOT NULL,
+    price numeric(38, 2),
+    category_id INTEGER,
+    FOREIGN KEY (category_id) REFERENCES Category (id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS ProductImage
+(
+    id INTEGER NOT NULL PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL,
+    product_id INTEGER NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES Product(id) ON DELETE CASCADE
+);
+
+CREATE SEQUENCE IF NOT EXISTS Category_seq INCREMENT BY 50;
+CREATE SEQUENCE IF NOT EXISTS Product_seq INCREMENT BY 50;
+CREATE SEQUENCE IF NOT EXISTS ProductImage INCREMENT BY 50;
+

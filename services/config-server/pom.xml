@@ -30,6 +30,34 @@
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.3</spring-cloud.version>
 	</properties>
+	<!-- Profiles -->
+	<!--<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.profiles.active>dev</spring.profiles.active>
+			</properties>
+			<build>
+				<filters>
+					<filter>src/main/resources/application-dev.yml</filter>
+				</filters>
+			</build>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<spring.profiles.active>prod</spring.profiles.active>
+			</properties>
+			<build>
+				<filters>
+					<filter>src/main/resources/application-prod.yml</filter>
+				</filters>
+			</build>
+		</profile>
+	</profiles>-->
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
