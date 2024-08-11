@@ -23,6 +23,8 @@ public class Product {
     @Column(name = "available_quantity")
     private double availableQuantity;
     private BigDecimal price;
+    @Column(name = "serial_number")
+    private String serialNumber;
     //one to many
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> images;

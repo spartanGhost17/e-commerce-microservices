@@ -1,0 +1,1 @@
+ALTER TABLE Product ADD COLUMN serial_number VARCHAR(255);
