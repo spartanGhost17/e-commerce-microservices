@@ -1,0 +1,38 @@
+spring:
+  data:
+    mongodb:
+      username: root
+      password: password
+      host: localhost
+      port: 27017
+      database: customer
+      authentication-database: admin
+
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092 # where kafka server is running
+      group-id: paymentGroup, orderGroup
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringSerializer #serializers can be custom
+      value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer #serializers can be custom
+      properties:
+        spring.json.trusted.packages: '*' # in development mode can accept '*'
+        spring.json.type.mapping: orderConfirmation:com.ecommerce.notification.kafka.order.OrderConfirmation,paymentConfirmation:com.ecommerce.notification.kafka.payment.PaymentConfirmation #type being consumed orderConfirmation is defined as param in OrderProducer
+  mail:
+    host: localhost
+    port: 1025
+    username: root
+    password: password
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+server:
+  port: 8040

@@ -77,7 +77,6 @@ public class OrderService {
                 orderRequest.paymentMethod(),
                 customer,
                 purchaseProducts
-
         ));
         return orderMapper.toOrderDto(order);//TODO: should just return the order id
     }
