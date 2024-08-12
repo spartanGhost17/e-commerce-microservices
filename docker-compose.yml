@@ -10,8 +10,8 @@ services:
       - postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    #networks:
-    #  - microservices-net
+    networks:
+      - microservices-net
     restart: unless-stopped
 
   pgadmin:
@@ -25,8 +25,8 @@ services:
       - pgadmin:/var/lib/pgadmin
     ports:
       - "5050:80"
-    #networks:
-    #  - microservices-net
+    networks:
+      - microservices-net
     depends_on:
       - postgresql
     restart: always
@@ -34,8 +34,8 @@ services:
   mongodb:
     image: mongo
     container_name: mongo_db
-    #ports:
-    #  - 27017:27017
+    ports:
+      - 27017:27017
     volumes:
       - mongo:/data
     environment:
@@ -58,6 +58,41 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: password   # Change this to your preferred password
     depends_on:
       - mongodb
+    networks:
+      - microservices-net
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_SERVER_ID: 1 #just for local
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+    networks:
+      - microservices-net
+    #volumes:
+    #  - zookeeper_data:/var/lib/zookeeper/data
+    #  - zookeeper_log:/var/lib/zookeeper/log
+    restart: unless-stopped
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: ms_kafka
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 #how many replication
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+    #volumes:
+    #  - kafka_data:/var/lib/kafka/data
     networks:
       - microservices-net
 
