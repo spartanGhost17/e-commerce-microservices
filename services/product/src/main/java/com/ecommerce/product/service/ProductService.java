@@ -65,7 +65,7 @@ public class ProductService {
             var productRequest = storedRequest.get(i);
 
             if(product.getAvailableQuantity() < productRequest.quantity()) {
-                throw new ProductPurchaseException("Sorry, the item "+product.getName()+" is out of stock");
+                throw new ProductPurchaseException("Sorry, the product: "+product.getName()+" has "+product.getAvailableQuantity()+" items left in stock");
             }
 
             var newAvailableQuantity = product.getAvailableQuantity() - productRequest.quantity();
