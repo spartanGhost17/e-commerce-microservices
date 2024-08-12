@@ -1,4 +1,4 @@
-package com.ecommerce.order.controller;
+package com.ecommerce.order.client;
 
 import com.ecommerce.order.dto.PurchaseDto;
 import com.ecommerce.order.exception.BusinessException;
