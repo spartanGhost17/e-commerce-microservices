@@ -11,6 +11,6 @@ public record PurchaseDto(
         String description,
         BigDecimal price,
         Double quantity,
-        List<ProductImage> ProductImage
+        List<ProductImage> images
 ) {
 }

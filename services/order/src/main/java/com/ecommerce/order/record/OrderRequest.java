@@ -1,6 +1,7 @@
 package com.ecommerce.order.record;
 
 import com.ecommerce.order.enums.PaymentMethod;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record OrderRequest(
+        @Nullable //TODO: make sure this nullable is actually necessary
         Integer id,
         String reference,
         @Positive(message = "Order amount should be positive")
