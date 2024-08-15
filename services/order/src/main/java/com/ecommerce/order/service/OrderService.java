@@ -5,21 +5,24 @@ import com.ecommerce.order.client.PaymentClient;
 import com.ecommerce.order.client.ProductClient;
 import com.ecommerce.order.dto.CustomerDto;
 import com.ecommerce.order.dto.OrderDto;
+import com.ecommerce.order.enums.OrderStatus;
 import com.ecommerce.order.exception.BusinessException;
 import com.ecommerce.order.kafka.OrderConfirmation;
 import com.ecommerce.order.kafka.OrderProducer;
 import com.ecommerce.order.mapper.OrderMapper;
+import com.ecommerce.order.model.HttpResponse;
 import com.ecommerce.order.record.OrderLineRequest;
 import com.ecommerce.order.record.OrderRequest;
 import com.ecommerce.order.record.PaymentRequest;
 import com.ecommerce.order.record.PurchaseRequest;
 import com.ecommerce.order.repository.OrderRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,19 +39,29 @@ public class OrderService {
 
     public OrderDto createOrder(OrderRequest orderRequest) {
         //check customer exists (OpenFeign)
-        var customer = (CustomerDto) Objects.requireNonNull(this.customerClient.findCustomerById(orderRequest.customerId()).getBody()).getData().get("customer");
-        if(customer == null) {
-            throw new BusinessException("Cannot create order. no customer exists with the provided id");
+        ResponseEntity<HttpResponse> response = this.customerClient.findCustomerById(orderRequest.customerId());
+        var body = response.getBody();
+
+        if (body == null || body.getData() == null || !body.getData().containsKey("customer")) {
+            throw new BusinessException("Cannot create order. No customer exists with the provided id.");
         }
+
+        var customerData = body.getData().get("customer");
+
+        // Convert the LinkedHashMap to CustomerDto using
+        ObjectMapper objectMapper = new ObjectMapper();
+        var customer = objectMapper.convertValue(customerData, CustomerDto.class);
         //.orElseThrow(
         //        () -> new BusinessException("Cannot create order. no customer exists with the provided id")
         //);
 
         //purchase product with product micro-service (RestTemplate)
         var purchaseProducts = this.productClient.purchaseProducts(orderRequest.products());
-
+        
         //persist order
-        var order = this.orderRepository.save(orderMapper.toOrder(orderRequest));
+        var mappedOrder = orderMapper.toOrder(orderRequest);
+        mappedOrder.setStatus(OrderStatus.PENDING);
+        var order = this.orderRepository.save(mappedOrder);
 
         //persist order lines
         for(PurchaseRequest purchaseRequest : orderRequest.products()) {
