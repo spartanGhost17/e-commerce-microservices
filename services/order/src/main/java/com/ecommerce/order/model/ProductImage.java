@@ -10,5 +10,5 @@ import lombok.*;
 public class ProductImage {
     private Integer id;
     private String imageUrl;
-    private Object product;
+    //private Object product;
 }

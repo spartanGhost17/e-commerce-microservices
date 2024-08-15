@@ -11,7 +11,7 @@ public record OrderConfirmation(
         String orderReference,
         BigDecimal totalAmount,
         PaymentMethod paymentMethod,
-        CustomerDto customerDto,
-        List<PurchaseDto> purchasedProducts
+        CustomerDto customer,
+        List<PurchaseDto> products
 ) {
 }

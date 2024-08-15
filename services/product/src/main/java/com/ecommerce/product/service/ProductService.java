@@ -72,7 +72,13 @@ public class ProductService {
             product.setAvailableQuantity(newAvailableQuantity);
             productRepository.save(product);
 
-            purchasedProducts.add(productMapper.toProductPurchaseDto(product, productRequest.quantity()));
+
+            // Map the product to a ProductPurchaseDto
+            var productPurchaseDto = productMapper.toProductPurchaseDto(product, productRequest.quantity());
+            // Modify the image URLs
+            productPurchaseDto.images().forEach(image -> image.setImageUrl(formatImageUrl(image.getImageUrl())));
+            // Add the modified ProductPurchaseDto to the list
+            purchasedProducts.add(productPurchaseDto);
         }
         return purchasedProducts;
     }
@@ -81,12 +87,22 @@ public class ProductService {
         log.info("find product by ID {}", productId);
         return productRepository.findById(productId)
                 .map(productMapper::toProductDto)
-                .orElseThrow(() -> new EntityNotFoundException("Could not find product for ID "+ productId));
+                .map(productDto -> {
+                    productDto.images().forEach(image ->
+                            image.setImageUrl(formatImageUrl(image.getImageUrl()))
+                    );
+                    return productDto;
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Could not find product for ID " + productId));
     }
 
     public List<ProductDto> findAll() {
         log.info("find all products");
-        return productRepository.findAll().stream().map(productMapper::toProductDto).collect(Collectors.toList());
+        return productRepository.findAll()
+                .stream()
+                .map(productMapper::toProductDto)
+                .peek(product -> product.images()
+                        .forEach(image -> image.setImageUrl(formatImageUrl(image.getImageUrl())))).collect(Collectors.toList());
     }
 
     /**
@@ -101,7 +117,7 @@ public class ProductService {
                 .product(product)
                 .build();
         imageRepository.save(productImage);
-        return getUri("/image/"+imageUrl).toString();
+        return formatImageUrl(imageUrl);
     }
 
     public ProductImage deleteById(Integer imageId, Integer productId) {
@@ -119,7 +135,7 @@ public class ProductService {
         log.info("get all images for product {}", productId);
         return imageRepository.findByProductId(productId).stream().peek(imageProduct -> {
             String imageUrl = imageProduct.getImageUrl();
-            imageProduct.setImageUrl(getUri("/image/"+imageUrl).toString());
+            imageProduct.setImageUrl(formatImageUrl(imageUrl));
         }).collect(Collectors.toList());
     }
 
@@ -137,7 +153,18 @@ public class ProductService {
 
     private ProductImage getImageById(Integer imageId) {
         log.info("get image by id {}", imageId);
-        return imageRepository.findById(imageId).orElseThrow(() -> new EntityNotFoundException("Could not find the image for ID:: "+imageId));
+        ProductImage image = imageRepository.findById(imageId).orElseThrow(() -> new EntityNotFoundException("Could not find the image for ID:: "+imageId));
+        image.setImageUrl(formatImageUrl(image.getImageUrl()));
+        return image;
+    }
+
+    /**
+     * format the partial image url (/productReference/image.png) to ("http://hostname:port/api/v1/image/productReference/image.png")
+     * @param partialUrl the partialUrl (/productReference/image.png)
+     * @return the formated url
+     */
+    private String formatImageUrl(String partialUrl) {
+        return getUri("/image/"+partialUrl).toString();
     }
 
     private URI getUri(String fileUrl) {
