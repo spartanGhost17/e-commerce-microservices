@@ -4,8 +4,8 @@ spring:
       username: root
       password: password
       host: localhost
-      port: 27017
-      database: customer
+      port: 27018
+      database: notification
       authentication-database: admin
 
   kafka:
@@ -13,8 +13,8 @@ spring:
       bootstrap-servers: localhost:9092 # where kafka server is running
       group-id: paymentGroup, orderGroup
       auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringSerializer #serializers can be custom
-      value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer #serializers can be custom
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer #serializers can be custom
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer #serializers can be custom
       properties:
         spring.json.trusted.packages: '*' # in development mode can accept '*'
         spring.json.type.mapping: orderConfirmation:com.ecommerce.notification.kafka.order.OrderConfirmation,paymentConfirmation:com.ecommerce.notification.kafka.payment.PaymentConfirmation #type being consumed orderConfirmation is defined as param in OrderProducer
