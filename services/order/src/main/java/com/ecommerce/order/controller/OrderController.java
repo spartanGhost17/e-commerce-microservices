@@ -1,6 +1,5 @@
 package com.ecommerce.order.controller;
 
-import com.ecommerce.order.dto.OrderDto;
 import com.ecommerce.order.model.HttpResponse;
 import com.ecommerce.order.record.OrderRequest;
 import com.ecommerce.order.service.OrderService;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 
 @RestController
