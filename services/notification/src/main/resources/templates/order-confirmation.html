@@ -24,6 +24,14 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
+        .table-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 800px;
+        }
+
+
         h1 {
             color: #333;
         }
@@ -60,23 +68,26 @@
     <p>Customer: <span th:text="${customerName}"></span></p>
     <p>Order ID: <span th:text="${orderReference}"></span></p>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Product Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="product : ${products}">
-            <td th:text="${product.name}"></td>
-            <td th:text="${product.quantity}"></td>
-            <td th:text="${product.price}"></td>
-            <td th:text="${product.images[0].imageUrl}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <!--<th>Image</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.name}"></td>
+                <td th:text="${product.quantity}"></td>
+                <td th:text="${product.price}"></td>
+                <!--<td th:text="${product.images[0].imageUrl}"></td>-->
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <div class="footer">
         <p>Total Amount: $<span th:text="${totalAmount}"></span></p>
