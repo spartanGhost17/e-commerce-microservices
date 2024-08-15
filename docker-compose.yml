@@ -42,7 +42,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
-      - mongo:/data
+      - mongo:/data/db
     networks:
       - microservices-net
 
@@ -105,6 +105,27 @@ services:
       - "1080:1080"
       - "1025:1025"
 
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - microservices-net
+
+  keycloak:
+    container_name: admin
+    image: quay.io/keycloak/keycloak:24.0.2
+    ports:
+      - "9098:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password
+    networks:
+      - microservices-net
+    command:
+      - "start-dev"
+
 networks:
   microservices-net:
     driver: bridge
@@ -115,16 +136,16 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ${HOME}/DevProjects/apps/angularProjects/aws-sites/volumes/postgres
+      device: ${HOME}/DevProjects/apps/angularProjects/aws-sites/volumes/ecommerce/postgres
   pgadmin:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ${HOME}/DevProjects/apps/angularProjects/aws-sites/volumes/pgadmin
+      device: ${HOME}/DevProjects/apps/angularProjects/aws-sites/volumes/ecommerce/pgadmin
   mongo:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: ${HOME}/DevProjects/apps/angularProjects/aws-sites/volumes/mongo
+      device: ${HOME}/DevProjects/apps/angularProjects/aws-sites/volumes/ecommerce/mongo
