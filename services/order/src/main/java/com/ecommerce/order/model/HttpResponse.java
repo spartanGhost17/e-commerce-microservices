@@ -1,7 +1,8 @@
 package com.ecommerce.order.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
 
@@ -11,6 +12,10 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 
 @Data
 @SuperBuilder
+@NoArgsConstructor
+//@AllArgsConstructor
+@Getter
+//@Setter
 @JsonInclude(NON_DEFAULT)
 public class HttpResponse {
 
