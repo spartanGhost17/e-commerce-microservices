@@ -4,6 +4,7 @@ import com.ecommerce.order.dto.PurchaseDto;
 import com.ecommerce.order.exception.BusinessException;
 import com.ecommerce.order.model.HttpResponse;
 import com.ecommerce.order.record.PurchaseRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -57,12 +59,18 @@ public class ProductClient {
 
         // Extract the 'products' list from the data map, ensuring the correct type
         @SuppressWarnings("unchecked")
-        List<PurchaseDto> products = (List<PurchaseDto>) responseBody.getData().get("products");
+        List<LinkedHashMap<String, Object>> productsMap = (List<LinkedHashMap<String, Object>>) responseBody.getData().get("products");
+        //List<PurchaseDto> products = (List<PurchaseDto>) responseBody.getData().get("products");
 
-        if (products == null) {
+        if (productsMap == null) {//(products == null) {
             throw new BusinessException("The 'products' key is missing or the data structure is incorrect.");
         }
 
-        return products;//responseEntity.getBody();
+        // Convert each LinkedHashMap to PurchaseDto
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        return productsMap.stream()
+                .map(productMap -> objectMapper.convertValue(productMap, PurchaseDto.class))
+                .toList();//responseEntity.getBody();
     }
 }
