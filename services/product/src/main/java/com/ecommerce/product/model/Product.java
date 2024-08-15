@@ -1,6 +1,7 @@
 package com.ecommerce.product.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,11 +28,13 @@ public class Product {
     private String serialNumber;
     //one to many
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference //parent side of bidirectional relationship (include object in serialization)
     private List<ProductImage> images;
 
     //one to many
     @ManyToOne
     @JoinColumn(name = "category_id")//foreign key
+    @JsonManagedReference
     //@JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_product_category"))
     private Category category;
 

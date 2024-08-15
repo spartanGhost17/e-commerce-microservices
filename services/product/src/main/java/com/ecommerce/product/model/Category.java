@@ -1,6 +1,7 @@
 package com.ecommerce.product.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,5 +21,6 @@ public class Category {
     private String name;
     private String description;
     @OneToMany(mappedBy = "category")
+    @JsonBackReference
     private List<Product> products;
 }
