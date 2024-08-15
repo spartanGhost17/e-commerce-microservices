@@ -19,11 +19,12 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<HttpResponse> handle(CustomerNotFoundException exception, HttpStatus status, WebRequest request) {
+    public ResponseEntity<HttpResponse> handle(CustomerNotFoundException exception, WebRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(HttpResponse.builder()
                 .path(request.getContextPath())
                 .timeStamp(Instant.now().toString())
-                .reason("An Internal Server error occurred")
+                .reason("Customer missing")
                 .message(exception.getMsg())
                 .status(status)
                 .statusCode(status.value())
@@ -32,7 +33,8 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<HttpResponse> handle(MethodArgumentNotValidException exception, HttpStatus status, WebRequest request) {
+    public ResponseEntity<HttpResponse> handle(MethodArgumentNotValidException exception, WebRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         var errors = new HashMap<String, String>();
         exception.getBindingResult().getAllErrors().forEach(error -> {
             var fieldName = ((FieldError)error).getObjectName();
