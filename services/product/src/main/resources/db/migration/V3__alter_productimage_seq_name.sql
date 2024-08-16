@@ -1,3 +1,0 @@
-/*ALTER SEQUENCE ProductImage RENAME TO ProductImage_seq;*/
-/*DROP SEQUENCE IF EXISTS ProductImage;*/
-CREATE SEQUENCE IF NOT EXISTS ProductImage_seq INCREMENT BY 50;
