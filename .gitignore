@@ -52,3 +52,6 @@ services/*/dependency-reduced-pom.xml
 services/*/buildNumber.properties
 services/*/.mvn/timing.properties
 services/*/.mvn/wrapper/maven-wrapper.jar
+
+# assets
+assets
