@@ -114,17 +114,19 @@ services:
       - microservices-net
 
   keycloak:
-    container_name: admin
+    container_name: keycloak
     image: quay.io/keycloak/keycloak:24.0.2
     ports:
       - "9098:8080"
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: password
+      KEYCLOAK_IMPORT: /opt/keycloak/data/import/keycloak-realm.json
+    volumes:
+      - ./keycloak/keycloak-realm.json:/opt/keycloak/data/import/keycloak-realm.json
     networks:
       - microservices-net
-    command:
-      - "start-dev"
+    command: ["start-dev", "--import-realm", "--verbose"]
 
 networks:
   microservices-net:
@@ -149,3 +151,10 @@ volumes:
       type: none
       o: bind
       device: ${HOME}/DevProjects/apps/angularProjects/aws-sites/volumes/ecommerce/mongo
+  keycloak:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./keycloak
+      #device: ${HOME}/DevProjects/apps/angularProjects/aws-sites/volumes/ecommerce/keycloak
